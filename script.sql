@@ -4,12 +4,12 @@
 
 --1 Base de dados e criação de tabela
 --A base a ser utilizada pode ser obtida a partir do link a seguir. 
---https://www.kaggle.com/datasets/csafrit2/higher-education-estudantes-performance-evaluation
+--https://www.kaggle.com/datasets/csafrit2/higher-education-students-performance-evaluation
 --Ela deve ser importada para uma base de dados gerenciada pelo PostgreSQL. Os dados devem ser armazenados em uma tabela apropriada para as análises --desejadas. Você deve identificar as colunas necessárias, de acordo com a descrição de cada item da prova. Além, é claro, de uma chave primária (de auto --incremento). Neste item, portanto, você deve desenvolver o script de criação da tabela.
 <<<<<<< HEAD
 --SUA SOLUÇÃO DO ITEM 1 ABAIXO:
 CREATE DATABASE p3_pbd;
-CREATE TABLE estudante (
+CREATE TABLE student (
 	id SERIAL PRIMARY KEY,
 	age int,
 	reading_frequency int,
@@ -34,14 +34,14 @@ DO $$
 <<<<<<< HEAD
 DECLARE
 	cur REFCURSOR;
-	estudante RECORD;
+	student RECORD;
 BEGIN
-	OPEN cur FOR SELECT reading_frequency, age FROM estudante;
+	OPEN cur FOR SELECT reading_frequency, age FROM student;
 	LOOP
-		FETCH cur into estudante;
+		FETCH cur into student;
 		EXIT WHEN NOT FOUND;
-		IF estudante.reading_frequency = 3 THEN
-			RAISE NOTICE '%', estudante.age;
+		IF student.reading_frequency = 3 THEN
+			RAISE NOTICE '%', student.age;
 		END IF;
 	END LOOP;
 	CLOSE cur;
@@ -80,24 +80,24 @@ $$
 >>>>>>> 42fa12c500d32a0f2548abdaafb2871b67530309
 -- ----------------------------------------------------------------
 --3 Aprovação sem ver aula
---Utilize um cursor com query dinâmica para mostrar todos os dados de cada estudante aprovado que nunca viu aula. No final, exiba a quantidade de estudantes.
+--Utilize um cursor com query dinâmica para mostrar todos os dados de cada student aprovado que nunca viu aula. No final, exiba a quantidade de students.
 --SUA SOLUÇÃO DO ITEM 3 ABAIXO:
 DO $$
 DECLARE
 	cur REFCURSOR;
-	estudante RECORD;
+	student RECORD;
 	i int := 0;
 	class_attendence int := 3;
 BEGIN
 	OPEN cur FOR EXECUTE
 	FORMAT(
-	'SELECT * FROM estudante
+	'SELECT * FROM student
 	WHERE class_attendence = $1'
 	) USING class_attendence;
 	LOOP
-		FETCH cur into estudante;
+		FETCH cur into student;
 		EXIT WHEN NOT FOUND;
-		RAISE NOTICE '%', estudante;
+		RAISE NOTICE '%', student;
 		i := i + 1;
 	END LOOP;
 	CLOSE cur;
@@ -106,23 +106,23 @@ END;
 $$
 -- ----------------------------------------------------------------
 -- 4 Transporte versus resultado
---Utilize um cursor vinculado para exibir todos os dados de cada estudante que vai de ônibus ou bicicleta para a faculdade e que tenha sido aprovado. No --final, exiba quantos tiraram nota AA.
+--Utilize um cursor vinculado para exibir todos os dados de cada student que vai de ônibus ou bicicleta para a faculdade e que tenha sido aprovado. No --final, exiba quantos tiraram nota AA.
 --SUA SOLUÇÃO DO ITEM 4 ABAIXO:
 DO $$
 DECLARE
 	cur cursor for
-		select * from estudante
+		select * from student
 		where transportation in (1, 3)
 		and output_grade > 0;
-	estudante RECORD;
+	student RECORD;
 	i int := 0;
 BEGIN
 	open cur;
 	LOOP
-		FETCH cur into estudante;
+		FETCH cur into student;
 		EXIT WHEN NOT FOUND;
-		RAISE NOTICE '%', estudante;
-		if estudante.output_grade = 7 then
+		RAISE NOTICE '%', student;
+		if student.output_grade = 7 then
 			i := i + 1;
 		end if;
 	END LOOP;
