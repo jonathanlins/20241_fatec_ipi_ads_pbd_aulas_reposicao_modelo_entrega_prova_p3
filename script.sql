@@ -6,6 +6,7 @@
 --A base a ser utilizada pode ser obtida a partir do link a seguir. 
 --https://www.kaggle.com/datasets/csafrit2/higher-education-estudantes-performance-evaluation
 --Ela deve ser importada para uma base de dados gerenciada pelo PostgreSQL. Os dados devem ser armazenados em uma tabela apropriada para as análises --desejadas. Você deve identificar as colunas necessárias, de acordo com a descrição de cada item da prova. Além, é claro, de uma chave primária (de auto --incremento). Neste item, portanto, você deve desenvolver o script de criação da tabela.
+<<<<<<< HEAD
 --SUA SOLUÇÃO DO ITEM 1 ABAIXO:
 CREATE DATABASE p3_pbd;
 CREATE TABLE estudante (
@@ -16,11 +17,21 @@ CREATE TABLE estudante (
 	transportation int,
 	output_grade int
 );
+=======
+--SUA SOLUÇÃO DO ITEM 1 ABAIXO:CREATE DATABASE prova_pbd;
+CREATE TABLE tb_student_prediction (
+    student_id SERIAL PRIMARY KEY,
+    age INT,
+    read_freq INT
+);
+
+>>>>>>> 42fa12c500d32a0f2548abdaafb2871b67530309
 -- ----------------------------------------------------------------
 --2 Leitura frequente
 --Utilize um cursor não vinculado para exibir a faixa etária de cada aluno que tenha frequẽncia de leitura de materiais não científicos alta.
 --SUA SOLUÇÃO DO ITEM 2 ABAIXO:
 DO $$
+<<<<<<< HEAD
 DECLARE
 	cur REFCURSOR;
 	estudante RECORD;
@@ -36,6 +47,37 @@ BEGIN
 	CLOSE cur;
 END;
 $$
+=======
+    DECLARE
+        cur_faixa_etaria REFCURSOR;
+        v_age INT;
+        v_faixa_etaria VARCHAR(20);
+    BEGIN
+        OPEN cur_faixa_etaria FOR
+        SELECT age FROM tb_student_prediction
+        WHERE read_freq = 3;
+
+        LOOP
+            FETCH cur_faixa_etaria INTO v_age;
+            EXIT WHEN NOT FOUND;
+            
+            IF v_age = 1 THEN
+                v_faixa_etaria := '18-21';
+            ELSIF v_age = 2 THEN
+                v_faixa_etaria := '22-25';
+            ELSIF v_age = 3 THEN
+                v_faixa_etaria := 'acima de 26';
+            ELSE
+                v_faixa_etaria := 'Desconhecida';
+            END IF;
+
+            RAISE NOTICE 'Faixa etária: %', v_faixa_etaria;
+        END LOOP;
+
+        CLOSE cur_faixa_etaria;
+    END $$;
+
+>>>>>>> 42fa12c500d32a0f2548abdaafb2871b67530309
 -- ----------------------------------------------------------------
 --3 Aprovação sem ver aula
 --Utilize um cursor com query dinâmica para mostrar todos os dados de cada estudante aprovado que nunca viu aula. No final, exiba a quantidade de estudantes.
